@@ -85,7 +85,7 @@ class Bounded {
         started.countDown()
         while (!Thread.currentThread().isInterrupted()) {
           queue.poll() match {
-            case null ⇒ // spin
+            case null ⇒ spin()
             case m ⇒
               assert(m == Message)
               consumed += 1
@@ -95,6 +95,11 @@ class Bounded {
               }
           }
         }
+      }
+      @volatile private var x = 0
+      private def spin(): Unit = {
+        x = 1000
+        while (x > 0) x -= 1
       }
     }
   }
